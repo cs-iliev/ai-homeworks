@@ -1,7 +1,7 @@
 import sys
+from utility import *
 from board import Board
 from solver import Solver
-from utility import is_square
 
 if len(sys.argv) != 4:
     sys.stderr.write(
@@ -35,13 +35,13 @@ for index, number in enumerate(ordered_list):
 initial_board = Board(input_list)
 
 try:
-    solver = Solver(initial_board, int(sys.argv[2]))
+    solver = Solver(initial_board, zero_pos)
 except Exception as e:
     print(e)
     sys.exit()
 
-solution_metrics = solver.search()
+ans = solver.solve()
 
-print('Path to goal: ' + str(solution_metrics.path_to_goal))
-print('Cost of path: ' + str(solution_metrics.cost_of_path()))
-print('Time: ' + str(solution_metrics.search_time))
+print(list(ans))
+
+print(solver.metrics.search_time)
