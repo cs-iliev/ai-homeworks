@@ -93,7 +93,8 @@ class Solver:
                 self.actions.appendleft(curr_node.action)
             curr_node = curr_node.parent
 
-        return self.actions
+        self.metrics.path_to_goal = list(self.actions)
+        return self.metrics
 
     def set_goal_state(self, zero_pos):
 

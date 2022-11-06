@@ -41,7 +41,4 @@ except Exception as e:
     sys.exit()
 
 ans = solver.solve()
-
-print(list(ans))
-
-print(solver.metrics.search_time)
+ans.display()
