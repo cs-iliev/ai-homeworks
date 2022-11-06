@@ -6,22 +6,22 @@ import utility
 
 class Solver:
 
-    def __init__(self, input_board):
+    def __init__(self, input_board, zero_pos):
 
         self.board = copy.deepcopy(input_board)
 
         if not self.solvable():
             raise ValueError('Not solvable')
 
-        self.goal_state = self.set_goal_state()
+        self.zero_pos = self.board.n ** 2 - 1 if zero_pos == -1 else zero_pos
+        self.goal_state = self.set_goal_state(self.zero_pos)
 
-        self.queue = utility.CustomQueue()
         self.pq = utility.CustomPriorityQueue()
         self.explored = utility.CustomStack()
 
         self.metrics = metrics.Metrics()
 
-    def set_goal_state(self):
+    def set_goal_state(self, zero_pos):
 
         goal_state = [['-' for x in range(self.board.n)]
                       for y in range(self.board.n)]
@@ -29,11 +29,19 @@ class Solver:
         i = 0
         j = 0
         count = 1
+        zero_placed = False
 
         while i < self.board.n:
-            if count == self.board.n ** 2:
-                count = 0
-            goal_state[i][j] = count
+
+            if not zero_placed:
+                board_entry = count
+            else:
+                board_entry = count - 1
+            if self.board.n * i + j == zero_pos:
+                board_entry = 0
+                zero_placed = True
+
+            goal_state[i][j] = board_entry
             count += 1
             j += 1
             if j == self.board.n:
@@ -63,7 +71,7 @@ class Solver:
             if future_board.move(node):
                 future_board.path_history.append(node)
 
-                if future_board not in self.queue and future_board not in self.explored:
+                if future_board not in self.explored:
                     future_board.score = future_board.manhattan_score(
                         self.goal_state)
                     self.pq.queue.put((future_board.score, future_board))
@@ -74,13 +82,10 @@ class Solver:
 
         self.board.score = self.board.manhattan_score(
             self.goal_state)
-
         self.pq.queue.put((self.board.score, self.board))
 
-        while self.pq.queue:
-            lowest_scored = self.pq.queue.get()
-            lowest_scored_state = lowest_scored[1]
-
+        while not self.pq.queue.empty():
+            lowest_scored_state = self.pq.queue.get()[1]
             self.explored.set.add(lowest_scored_state)
 
             if self.goal_test(lowest_scored_state):

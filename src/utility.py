@@ -23,21 +23,6 @@ def is_even(num):
     return num % 2 == 0
 
 
-class CustomQueue:
-    """A custom queue that stores all nodes 
-    that have been found in the search tree"""
-
-    def __init__(self):
-        self.queue = deque()
-
-    def __contains__(self, item):
-        for element in self.queue:
-            if item.state == element.state:
-                return True
-
-        return False
-
-
 class CustomStack:
     """A custom stack that stores all nodes that have already been explored"""
 

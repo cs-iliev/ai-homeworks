@@ -1,5 +1,6 @@
 import math
 import copy
+import numpy as np
 
 
 class Board:
@@ -101,4 +102,4 @@ class Board:
         return self.score == other.score
 
     def __hash__(self):
-        return hash(self.score)
+        return hash(self.score + np.random.uniform(-2, -1, 1)[0])

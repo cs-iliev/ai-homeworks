@@ -5,11 +5,18 @@ from utility import is_square
 
 if len(sys.argv) != 4:
     sys.stderr.write(
-        'Error: must be 4 command line argument of the form: \npython n_puzzle.py <board-size> <zero-location-in-solution> <board>\n')
+        'Error: must be 4 command line argument of the form: \npython n_puzzle.py <board-size> <zero-position-in-solution> <board>\n')
     sys.exit()
 
 if not is_square(int(sys.argv[1])):
     sys.stderr.write('Error: <board-size> argument must be a perfect square\n')
+    sys.exit()
+
+zero_pos = int(sys.argv[2])
+
+if int(zero_pos < -1 or zero_pos >= int(sys.argv[1]) ** 2):
+    sys.stderr.write(
+        'Error: <zero-position-in-solution> argument must between 0 and N - 1 where N is the board size or -1 for default\n')
     sys.exit()
 
 input_list = sys.argv[3].split(',')
@@ -28,7 +35,7 @@ for index, number in enumerate(ordered_list):
 initial_board = Board(input_list)
 
 try:
-    solver = Solver(initial_board)
+    solver = Solver(initial_board, int(sys.argv[2]))
 except Exception as e:
     print(e)
     sys.exit()
