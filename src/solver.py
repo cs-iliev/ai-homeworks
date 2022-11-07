@@ -68,7 +68,7 @@ class Solver:
             (0, -1): 'right'
         }
 
-        visited = set()
+        explored = set()
         pq = []
         hq.heappush(pq, self.start_node)
 
@@ -77,13 +77,13 @@ class Solver:
             if curr_node.state == self.goal_state:
                 self.metrics.stop_timer()
                 break
-            if str(curr_node.state) in visited:
+            if str(curr_node.state) in explored:
                 continue
-            visited.add(str(curr_node.state))
+            explored.add(str(curr_node.state))
 
             for direction in move_directions.keys():
                 next_state, next_pos = self.move(
-                    curr_node.state, curr_node.pos, visited, direction)
+                    curr_node.state, curr_node.pos, explored, direction)
                 if next_state:
                     hq.heappush(pq, Node(next_state, curr_node,
                                 move_directions[direction], next_pos))
