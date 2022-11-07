@@ -6,12 +6,12 @@ class Node:
         self.action = action
         self.pos = pos
         self.path_cost = parent.path_cost + 1 if parent != None else 0
-        self.manhattan_distance = self.get_manhattan_distance(curr_state)
+        self.manhattan_distance = self.get_manhattan_distance()
 
     def __lt__(self, other):
         return self.path_cost + self.manhattan_distance < other.path_cost + other.manhattan_distance
 
-    def get_manhattan_distance(self, curr_state):
+    def get_manhattan_distance(self):
         distance = 0
 
         for i in range(len(self.state)):
