@@ -7,12 +7,12 @@ from metrics import Metrics
 
 class Solver:
 
-    def __init__(self, init_board, zero_pos):
+    def __init__(self, init_board, zero_pos_in_solved):
         self.n = init_board.n
-        self.zero_pos = self.n ** 2 - 1 if zero_pos == -1 else zero_pos
+        self.zero_pos = self.n ** 2 - 1 if zero_pos_in_solved == -1 else zero_pos_in_solved
         self.init_state = init_board.state
         self.goal_state = self.set_goal_state(self.zero_pos)
-        self.actions = deque()
+        self.path = deque()
         self.metrics = Metrics()
 
         for i, v in enumerate(self.init_state):
@@ -27,7 +27,7 @@ class Solver:
         temp = curr_state[pos[0]][pos[1]]
         curr_state[pos[0]][pos[1]] = curr_state[pos[0] +
                                                 direction[0]][pos[1] + direction[1]]
-        curr_state[pos[0] + direction[0]][pos[1]+direction[1]] = temp
+        curr_state[pos[0] + direction[0]][pos[1] + direction[1]] = temp
         return curr_state
 
     def move(self, curr_state, pos, visited, direction):
@@ -43,17 +43,17 @@ class Solver:
 
     def is_solvable(self):
         flattened_list = [i for sublist in self.init_state for i in sublist]
-        inv_count = 0
+        inversion_count = 0
         for i in range(len(flattened_list) - 1):
-            for j in range(i+1, len(flattened_list)):
+            for j in range(i + 1, len(flattened_list)):
                 if flattened_list[i] and flattened_list[j] and flattened_list[i] > flattened_list[j]:
-                    inv_count += 1
+                    inversion_count += 1
 
         if len(self.init_state[0]) % 2:
-            return inv_count % 2 == 0
+            return inversion_count % 2 == 0
         else:
             x = len(self.init_state) - self.start_pos[0]
-            return inv_count % 2 == 0 if x % 2 else inv_count % 2
+            return inversion_count % 2 == 0 if x % 2 else inversion_count % 2
 
     def solve(self):
         self.metrics.start_timer()
@@ -90,10 +90,10 @@ class Solver:
 
         while curr_node:
             if curr_node.action:
-                self.actions.appendleft(curr_node.action)
+                self.path.appendleft(curr_node.action)
             curr_node = curr_node.parent
 
-        self.metrics.path_to_goal = list(self.actions)
+        self.metrics.path_to_goal = list(self.path)
         return self.metrics
 
     def set_goal_state(self, zero_pos):
