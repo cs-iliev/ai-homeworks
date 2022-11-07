@@ -1,7 +1,7 @@
 import sys
+from utility import *
 from board import Board
 from solver import Solver
-from utility import is_square
 
 if len(sys.argv) != 4:
     sys.stderr.write(
@@ -12,9 +12,9 @@ if not is_square(int(sys.argv[1])):
     sys.stderr.write('Error: <board-size> argument must be a perfect square\n')
     sys.exit()
 
-zero_pos = int(sys.argv[2])
+zero_pos_in_solved = int(sys.argv[2])
 
-if int(zero_pos < -1 or zero_pos >= int(sys.argv[1]) ** 2):
+if zero_pos_in_solved < -1 or zero_pos_in_solved >= int(sys.argv[1]) ** 2:
     sys.stderr.write(
         'Error: <zero-position-in-solution> argument must between 0 and N - 1 where N is the board size or -1 for default\n')
     sys.exit()
@@ -35,13 +35,10 @@ for index, number in enumerate(ordered_list):
 initial_board = Board(input_list)
 
 try:
-    solver = Solver(initial_board, int(sys.argv[2]))
+    solver = Solver(initial_board, zero_pos_in_solved)
 except Exception as e:
     print(e)
     sys.exit()
 
-solution_metrics = solver.search()
-
-print('Path to goal: ' + str(solution_metrics.path_to_goal))
-print('Cost of path: ' + str(solution_metrics.cost_of_path()))
-print('Time: ' + str(solution_metrics.search_time))
+ans = solver.solve()
+ans.display()

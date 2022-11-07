@@ -5,7 +5,6 @@ class Metrics:
 
     def __init__(self):
         self.path_to_goal = []
-        self.nodes_expanded = 0
         self.start_time = 0
         self.end_time = 0
         self.search_time = 0
@@ -20,3 +19,8 @@ class Metrics:
         self.end_time = time.time()
         self.search_time = "{0:.5f} ms".format(
             (self.end_time - self.start_time) * 1000)
+
+    def display(self):
+        print('Cost of path is: ', self.cost_of_path())
+        print('Path: ', self.path_to_goal)
+        print('Search time: ', self.search_time)
